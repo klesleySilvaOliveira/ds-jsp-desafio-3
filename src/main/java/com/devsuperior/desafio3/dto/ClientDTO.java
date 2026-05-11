@@ -2,6 +2,8 @@ package com.devsuperior.desafio3.dto;
 
 import java.time.LocalDate;
 
+import com.devsuperior.desafio3.entities.Client;
+
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.PositiveOrZero;
@@ -39,6 +41,16 @@ public class ClientDTO {
 		this.income = income;
 		this.birthDate = birthDate;
 		this.children = children;
+	}
+	
+	public ClientDTO(Client client) {
+		super();
+		id = client.getId();
+		name = client.getName();
+		cpf = client.getCpf();
+		income = client.getIncome();
+		birthDate =  client.getBirthDate();
+		children = client.getChildren();
 	}
 
 	public Long getId() {
