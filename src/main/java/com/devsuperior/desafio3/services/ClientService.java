@@ -3,6 +3,7 @@ package com.devsuperior.desafio3.services;
 import javax.management.RuntimeErrorException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -11,6 +12,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.devsuperior.desafio3.dto.ClientDTO;
 import com.devsuperior.desafio3.entities.Client;
 import com.devsuperior.desafio3.repositories.ClientRepository;
+import com.devsuperior.desafio3.services.exceptions.DatabaseException;
+import com.devsuperior.desafio3.services.exceptions.ResourceNotFoundException;
 
 import jakarta.persistence.EntityNotFoundException;
 
@@ -56,11 +59,18 @@ public class ClientService {
 		
 	}
 
-	/*
-	 * public ResponseEntity<Void> delete(Long id){
-	 * 
-	 * }
-	 */
+	public void delete(Long id) {
+		
+		if (!repository.existsById(id)) {
+			throw new ResourceNotFoundException("Resource not found!");
+		}
+		try {
+			repository.deleteById(id);
+		}
+		catch (DataIntegrityViolationException e) {
+			throw new DatabaseException("Data integrity violation!");
+		}
+	}	
 
 	private void copyDtotoClient(ClientDTO dto, Client client) {
 
