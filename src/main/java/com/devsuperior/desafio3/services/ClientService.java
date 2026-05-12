@@ -1,12 +1,11 @@
 package com.devsuperior.desafio3.services;
 
-import javax.management.RuntimeErrorException;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.devsuperior.desafio3.dto.ClientDTO;
@@ -35,7 +34,8 @@ public class ClientService {
 
 	@Transactional(readOnly = true)
 	public ClientDTO findById(Long id) {
-		Client client = repository.findById(id).get();
+		Client client = repository.findById(id).orElseThrow(
+				() -> new ResourceNotFoundException("Resource not found!"));
 		return new ClientDTO(client);
 	}
 
@@ -54,11 +54,12 @@ public class ClientService {
 			return new ClientDTO(client);
 		} 
 		catch (EntityNotFoundException e) {
-			throw new RuntimeErrorException(null, e.getMessage());
+			throw new ResourceNotFoundException("Resource not found!");
 		}
 		
 	}
 
+	@Transactional(propagation = Propagation.SUPPORTS)
 	public void delete(Long id) {
 		
 		if (!repository.existsById(id)) {
