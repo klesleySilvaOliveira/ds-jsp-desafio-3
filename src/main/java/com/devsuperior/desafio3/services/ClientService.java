@@ -1,5 +1,7 @@
 package com.devsuperior.desafio3.services;
 
+import javax.management.RuntimeErrorException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -9,6 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 import com.devsuperior.desafio3.dto.ClientDTO;
 import com.devsuperior.desafio3.entities.Client;
 import com.devsuperior.desafio3.repositories.ClientRepository;
+
+import jakarta.persistence.EntityNotFoundException;
 
 @Service
 public class ClientService {
@@ -37,11 +41,22 @@ public class ClientService {
 		return repository.findAll(pageable).map(x -> new ClientDTO(x));
 	}
 
+	@Transactional
+	public ClientDTO update(Long id, ClientDTO dto) {
+		try {			
+			Client client = repository.getReferenceById(id);
+			copyDtotoClient(dto, client);
+			client = repository.save(client);
+			
+			return new ClientDTO(client);
+		} 
+		catch (EntityNotFoundException e) {
+			throw new RuntimeErrorException(null, e.getMessage());
+		}
+		
+	}
+
 	/*
-	 * public ResponseEntity<ClientDTO> update(Long id, ClientDTO dto) {
-	 * 
-	 * }
-	 * 
 	 * public ResponseEntity<Void> delete(Long id){
 	 * 
 	 * }
