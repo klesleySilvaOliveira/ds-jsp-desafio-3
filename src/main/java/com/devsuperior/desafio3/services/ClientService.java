@@ -26,7 +26,7 @@ public class ClientService {
 	public ClientDTO insert(ClientDTO dto) {
 
 		Client client = new Client();
-		copyDtotoClient(dto, client);
+		copyDtoToClient(dto, client);
 		client = repository.save(client);
 
 		return new ClientDTO(client);
@@ -48,7 +48,7 @@ public class ClientService {
 	public ClientDTO update(Long id, ClientDTO dto) {
 		try {			
 			Client client = repository.getReferenceById(id);
-			copyDtotoClient(dto, client);
+			copyDtoToClient(dto, client);
 			client = repository.save(client);
 			
 			return new ClientDTO(client);
@@ -73,7 +73,7 @@ public class ClientService {
 		}
 	}	
 
-	private void copyDtotoClient(ClientDTO dto, Client client) {
+	private void copyDtoToClient(ClientDTO dto, Client client) {
 
 		client.setName(dto.getName());
 		client.setCpf(dto.getCpf());
